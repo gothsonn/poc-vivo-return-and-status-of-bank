@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poc-vivo-return-and-status-of-bank
+  labels:
+    app: poc-vivo-return-and-status-of-bank
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: poc-vivo-return-and-status-of-bank
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: poc-vivo-return-and-status-of-bank
+        version: v1
+    spec:
+      containers:
+      - name: poc-vivo-return-and-status-of-bank
+        image: registry.devops.7f8254f4188647b4be19.eastus.aksapp.io/poc-vivo-return-and-status-of-bank
+        ports:
+        - containerPort: 9000
+        envFrom:
+        - configMapRef:
+            name: cm-kafka-op
+        - secretRef:
+            name: sc-azure-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: poc-vivo-return-and-status-of-bank
+spec:
+  selector:
+    app: poc-vivo-return-and-status-of-bank
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: poc-vivo-return-and-status-of-bank
+spec:
+  gateways:
+    - default/default
+  hosts:
+  - poc-vivo-return-and-status-of-bank.istio.7f8254f4188647b4be19.eastus.aksapp.io
+  http:
+  - name: "http-routes"
+    match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: poc-vivo-return-and-status-of-bank
+        subset: v1
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: poc-vivo-return-and-status-of-bank
+spec:
+  host: poc-vivo-return-and-status-of-bank
+  subsets:
+  - name: v1
+    labels:
+      version: v1
