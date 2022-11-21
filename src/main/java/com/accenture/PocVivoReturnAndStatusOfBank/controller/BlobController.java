@@ -2,7 +2,7 @@ package com.accenture.PocVivoReturnAndStatusOfBank.controller;
 
 import com.accenture.PocVivoReturnAndStatusOfBank.model.FinancialAccount;
 import com.accenture.PocVivoReturnAndStatusOfBank.service.BlobService;
-import com.accenture.PocVivoReturnAndStatusOfBank.service.SftpService;
+import com.accenture.PocVivoReturnAndStatusOfBank.service.SftpServiceVivo;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,17 +18,24 @@ public class BlobController {
 
     protected final BlobService blobService;
 
-    private final SftpService sftpService;
+    private final SftpServiceVivo sftpServiceVivo;
 
-    public BlobController(BlobService blobService, SftpService sftpService) {
+    public BlobController(BlobService blobService, SftpServiceVivo sftpServiceVivo) {
         this.blobService = blobService;
-        this.sftpService = sftpService;
+        this.sftpServiceVivo = sftpServiceVivo;
     }
 
-    @GetMapping("/readFile/{id}")
-    public FinancialAccount readBlobFile(@PathVariable("id") String id) throws IOException, JSchException, SftpException {
-//        return blobService.downloadFile(id);
-        return sftpService.downloadFile(id);
+//    @GetMapping("/readFile/{id}")
+//    public FinancialAccount readBlobFile(
+//            @PathVariable("id") String id
+//    ) throws IOException, JSchException, SftpException {
+//        return sftpServiceVivo.downloadFile(id);
+//    }
+
+    @GetMapping("/getFiles")
+    public String getFiles() throws JSchException, SftpException, IOException {
+        sftpServiceVivo.getDirectoryList();
+        return "Deu certo";
     }
 
 

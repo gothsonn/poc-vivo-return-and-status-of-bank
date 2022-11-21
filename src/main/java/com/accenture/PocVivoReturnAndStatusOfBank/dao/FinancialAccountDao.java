@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,7 +106,8 @@ public class FinancialAccountDao {
         var updates = ApiHelper.convertUpdateObjectToUpdateExpr(financialAccountUpdate);
 
         if (!updates.isEmpty()) {
-            updates.add(set("lastModified", LocalDateTime.now()));
+            updates.add(set("lastModified", OffsetDateTime.now()));
+            updates.add(set("status", "processado"));
             var account = collection.findOneAndUpdate(
                     eq("_id", id),
                     combine(updates),

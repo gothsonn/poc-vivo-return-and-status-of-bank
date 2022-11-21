@@ -1,6 +1,6 @@
 package com.accenture.PocVivoReturnAndStatusOfBank.topics.producer;
 
-import com.accenture.PocVivoReturnAndStatusOfBank.model.FinancialAccountCreateEvent;
+import com.accenture.PocVivoReturnAndStatusOfBank.model.FinancialAccount;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class TopicProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public void send(FinancialAccountCreateEvent message){
+    public void send(FinancialAccount message){
 
         log.info("Payload enviado: {}",  message.toString());
         try {

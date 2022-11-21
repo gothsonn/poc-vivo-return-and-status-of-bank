@@ -19,9 +19,7 @@ public class GenerateFile {
     protected String localPath;
 
     public String generate(String data, String id) throws IOException {
-//        String fileName = id +"-"+ System.currentTimeMillis() + ".txt";
         String fileName = id +".txt";
-//        new File(localPath + fileName);
         log.info("generate-Encripted",data);
         log.info("generate-Id",id);
         FileWriter writer = new FileWriter(getLocalPath() + fileName);

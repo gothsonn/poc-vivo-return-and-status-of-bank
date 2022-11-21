@@ -30,11 +30,16 @@ public class BlobService {
     protected EncryptedFinancialAccount encryptedFinancialAccount;
 
     @Autowired
-    public BlobService(@Value("${azure.storage.blob.connection-string}") String connectStr,@Value("${azure.storage.blob.container-name}") String containerName, GenerateFile generateFile, EncryptedFinancialAccount encryptedFinancialAccount){
+    public BlobService(
+            @Value("${azure.storage.blob.connection-string}") String connectStr,
+            @Value("${azure.storage.blob.container-name}") String containerName,
+            GenerateFile generateFile,
+            EncryptedFinancialAccount encryptedFinancialAccount
+    ){
         this.connectStr = connectStr;
         this.containerName = containerName;
         this.blobServiceClient = new BlobServiceClientBuilder().connectionString(connectStr).buildClient();
-         this.containerClient = blobServiceClient.createBlobContainerIfNotExists(containerName);
+        this.containerClient = blobServiceClient.createBlobContainerIfNotExists(containerName);
         this.generateFile = generateFile;
         this.encryptedFinancialAccount = encryptedFinancialAccount;
     }
@@ -47,7 +52,6 @@ public class BlobService {
         BlobClient blobClient = containerClient.getBlobClient(fileName);
 
         log.info("\nUploading to Blob storage as blob:\n\t" + blobClient.getBlobUrl());
-
 
         // Upload the blob
         blobClient.uploadFromFile(localPath + fileName);
@@ -62,8 +66,9 @@ public class BlobService {
         String fileName = id +".txt";
         log.info("\nDownloading blob to\n\t " + localPath + fileName);
         BlobClient blobClient = containerClient.getBlobClient(fileName);
-        blobClient.downloadToFile(localPath + fileName);
-        String contentFile = generateFile.readFile(fileName);
+        String fileLocal = fileName.replace(".txt","-ret.txt");
+        blobClient.downloadToFile(localPath + fileLocal);
+        String contentFile = generateFile.readFile(fileLocal);
         FinancialAccount financialAccount = encryptedFinancialAccount.objectToStringDecode(contentFile);
         deleteFile(fileName);
         return financialAccount;
@@ -74,5 +79,9 @@ public class BlobService {
         log.info("\nDeleting blob to\n\t " + localPath + fileName);
         File deleteFile = new File(localPath + fileName);
         deleteFile.delete();
+    }
+
+    public void deleteRemoteFile(String fileName) {
+        containerClient.deleteIfExists();
     }
 }
