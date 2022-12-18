@@ -16,7 +16,7 @@ public class MongoDBConfiguration {
 
     @Bean
     @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-    public MongoClient mongoClient(@Value("${db.connection.string}") String connectionString) {
+    public MongoClient mongoClient(@Value("${db.connectionString}") String connectionString) {
         var connection = new ConnectionString(connectionString);
         var client = MongoClients.create(connection);
         return client;
