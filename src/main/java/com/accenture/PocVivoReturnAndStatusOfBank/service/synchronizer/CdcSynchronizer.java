@@ -12,7 +12,7 @@ public class CdcSynchronizer {
     @Autowired
 
 
-    @Scheduled(fixedDelay = 120000)
+    //@Scheduled(fixedDelay = 120000)
     public void synchronize() {
         log.info("Start to run the sync...");
 

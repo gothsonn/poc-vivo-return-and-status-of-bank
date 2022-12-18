@@ -120,7 +120,7 @@ public class SftpServiceVivo {
         List<String> listNameFile = new ArrayList<>();
         List<String> listFinancialAccount = new ArrayList<>();
 
-        log.info("filesList size:" + filesList.size());
+        log.info("filesList size:  " + filesList.size());
         if(filesList != null) {
             for (ChannelSftp.LsEntry entry : filesList) {
                 if(!entry.getFilename().contains("-ret.txt")){
@@ -128,7 +128,6 @@ public class SftpServiceVivo {
                 }
             }
         }
-
 
         for(String fileName : listNameFile){
             var id = fileName.split(".txt")[0];
@@ -143,14 +142,12 @@ public class SftpServiceVivo {
             deleteRemoteFile(fileName);
         }
 
-
         for (String account : listFinancialAccount){
             FinancialAccount financialAccount = objectMapper.readValue(account, FinancialAccount.class);
             topicProducer.send(financialAccount);
             FinancialAccountUpdate accountUpdate = objectMapper.readValue(account, FinancialAccountUpdate.class);
             financialAccountDao.updateFinancialAccount(financialAccount.getId(), accountUpdate);
         }
-
 
     }
 }
